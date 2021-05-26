@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.muser.mybatis.mapper.Write_ListMapper">
+	
+		<!-- 게시글쓰기 -->
+		<insert id="BoardInsert" parameterType="Board" keyProperty="boardNo" useGeneratedKeys="true">
+				<selectKey keyProperty="boardNo" resultType="int" order="BEFORE">
+	    			SELECT MBT_SEQ.NEXTVAL FROM DUAL
+	    		</selectKey>
+				INSERT INTO mu_board (boardNo,muId,boardTitle,boardDesc,bDate) 
+				VALUES (#{boardNo},#{muId},#{boardTitle},#{boardDesc},SYSDATE)
+		</insert>
+		
+		<!-- 첨부파일 추가 -->
+		 <insert id="insertFile" parameterType="hashMap">
+				INSERT INTO MP_FILE(
+					FILE_NO,
+					BOARDNO,
+					ORG_FILE_NAME,
+					STORED_FILE_NAME,
+					FILE_SIZE
+				)VALUES(
+					SEQ_MP_FILE_NO.NEXTVAL,
+					#{boardNo},
+					#{ORG_FILE_NAME},
+					#{STORED_FILE_NAME},
+					#{FILE_SIZE}
+				)
+	    </insert>
+	    
+	    <!-- 첨부파일 조회 -->
+		<select id="selectFileList" parameterType="int" resultType="hashMap">
+			SELECT FILE_NO,
+				   ORG_FILE_NAME,
+				   ROUND(FILE_SIZE/1024,1) AS FILE_SIZE,
+				   DEL_GB
+			  FROM MP_FILE
+			 WHERE BOARDNO = #{boardNo}
+			   AND DEL_GB = 'N'
+			   ORDER BY FILE_NO ASC
+		</select>
+		
+		<!-- 첨부파일 다운 -->
+		<select id="selectFileInfo" parameterType="hashMap" resultType="hashMap">
+			SELECT 
+				STORED_FILE_NAME,
+				ORG_FILE_NAME
+			FROM MP_FILE
+			WHERE FILE_NO = #{FILE_NO}
+		</select>
+		
+		<!-- 첨부파일 수정 -->
+		<update id="updateFile" parameterType="hashMap">
+	    	UPDATE MP_FILE SET
+	    	DEL_GB = 'Y'
+	    	WHERE FILE_NO = #{FILE_NO}
+	    </update>
+		
+		<!-- 게시판 리스트 업 -->
+		<select id="Write_List" resultType="Board" parameterType="hashMap">
+				SELECT boardNo,muId,boardTitle,boardDesc,bDate,boardHit FROM (
+					SELECT MBT_P_SEQ,boardNo,muId,boardTitle,boardDesc,bDate,boardHit From(
+						SELECT ROWNUM AS MBT_P_SEQ,boardNo,muId,boardTitle,boardDesc,bDate,boardHit From(
+							SELECT * FROM mu_board
+							<trim prefix="WHERE" prefixOverrides="AND|OR">
+							   <if test="Search == 'TitleSearch' and Searchtext !=null and Searchtext !=''">
+			  				    		AND boardTitle LIKE '%' || #{Searchtext} || '%' 
+							    </if>
+							    <if test="Search == 'SearchSearch' and Searchtext !=null and Searchtext!=''">
+							   		    AND boardDesc LIKE '%' || #{Searchtext} || '%' 
+							    </if>
+							    <if test="Search == 'IdSearch' and Searchtext !=null and Searchtext!=''">
+							    		AND muId LIKE '%' || #{Searchtext} || '%'
+							    </if>
+							</trim>
+							ORDER BY boardNo DESC
+						)
+					)
+				WHERE MBT_P_SEQ >= ${start-1}
+				)
+				<![CDATA[WHERE ROWNUM <= ${end}]]>
+				
+		</select>
+		
+		<select id="SelectBoard" resultType="Board" parameterType="int">
+				SELECT * FROM mu_board WHERE boardNo = #{boardNo}
+		</select>
+		
+		<update id="BoardHitUpdate" parameterType="int">
+				UPDATE mu_board SET boardHit = boardHit +1 WHERE boardNo=#{boardNo}
+		</update>
+		
+		<update id="U_B_Modify" parameterType="Board">
+				UPDATE mu_board SET boardTitle=#{boardTitle},boardDesc=#{boardDesc},bDate=SYSDATE WHERE boardNo=#{boardNo}
+		</update>
+		
+		<delete id="BoardDelete" parameterType="int">
+				DELETE FROM mu_board WHERE boardNo =#{boardNo}
+		</delete>
+
+		<select id="SelectCount" resultType="int" parameterType="hashMap">
+		   		SELECT count(*) FROM mu_board 
+		   		<trim prefix="WHERE" prefixOverrides="AND|OR">
+		   		
+		   		<if test="Searchtext !=null and Searchtext !='' ">
+			   		<if test="Search=='TitleSearch'">
+			   		    AND  boardTitle LIKE '%' || #{Searchtext} || '%'
+			   		</if>
+			   		<if test="Search == 'SearchSearch'">
+					    AND boardDesc LIKE '%' || #{Searchtext} || '%' 
+					 </if>
+					 <if test="Search == 'IdSearch'">
+					    AND muId LIKE '%' || #{Searchtext} || '%' 
+					 </if>
+				 </if>
+		   		</trim>
+		</select>
+
+</mapper>

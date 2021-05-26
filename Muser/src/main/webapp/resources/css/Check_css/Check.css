@@ -1,0 +1,6 @@
+      /*datepicker에서 사용한 이미지 버튼 style적용*/
+      img.ui-datepicker-trigger {
+        margin-left:3px; vertical-align:middle; cursor:pointer;
+        height: min-content;
+        margin-top: 6px;
+}

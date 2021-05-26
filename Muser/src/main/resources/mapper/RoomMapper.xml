@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.muser.mybatis.mapper.RoomMapper">
+
+	<!-- 게시글쓰기 -->
+		<insert id="InsertRoom" parameterType="Mu_Office" keyProperty="ofNo" useGeneratedKeys="true">
+				<selectKey keyProperty="ofNo" resultType="int" order="BEFORE">
+	    			SELECT OF_SEQ.NEXTVAL FROM DUAL
+	    		</selectKey>
+				INSERT INTO mu_office (ofNo,ofName,ofDesc,repName,ofAddr1,ofAddr2,ofAddr3,repPhone,ofPrice,ofDate) 
+				VALUES (#{ofNo},#{ofName},#{ofDesc},#{repName},#{ofAddr1},#{ofAddr2},#{ofAddr3},#{repPhone},#{ofPrice},SYSDATE)
+		</insert>
+		
+	<!-- 첨부파일 추가 -->
+		 <insert id="insertRFile" parameterType="hashMap">
+				INSERT INTO MP_RFILE(
+					FILE_NO,OFNO,ORG_FILE_NAME,STORED_FILE_NAME,FILE_SIZE
+				)VALUES(
+					SEQ_MP_RFILE_NO.NEXTVAL,#{ofNo},#{ORG_FILE_NAME},#{STORED_FILE_NAME},#{FILE_SIZE}
+				)
+	    </insert>
+	    
+		<!-- 연습실 목록 -->
+		<select id="oListAll" resultType="Mu_Office">
+				Select * FROM mu_office 
+					ORDER BY ofDate DESC
+		</select>
+
+	    <!-- 관리자 모드 연습실 리스트 -->
+	    <select id="Room_List" resultType="Mu_Office" parameterType="hashMap">
+		SELECT ofNo,repName,ofAddr1,ofAddr2,ofAddr3,ofDate FROM (
+			SELECT OF_P_SEQ,ofNo,repName,ofAddr1,ofAddr2,ofAddr3,ofDate FROM (
+				SELECT ROWNUM AS OF_P_SEQ,ofNo,repName,ofAddr1,ofAddr2,ofAddr3,ofDate FROM (
+					SELECT * FROM Mu_Office 
+						<trim prefix="WHERE" prefixOverrides="AND|OR">
+							<if test="Search == 'NameSearch' and Searchtext !=null and Searchtext!=''">
+							   		AND repName LIKE '%' || #{Searchtext} || '%' 
+							</if>
+						</trim>
+					ORDER BY ofNo DESC 
+				)
+			)	
+		WHERE OF_P_SEQ >= ${start-1}
+		)
+		<![CDATA[WHERE ROWNUM <= ${end}]]>
+	</select>
+	
+	<select id="SelectCount" resultType="int" parameterType="hashMap">
+		SELECT count(*) FROM Mu_Office 
+			<trim prefix="WHERE" prefixOverrides="AND|OR">	   		
+		   		<if test="Searchtext !=null and Searchtext !='' ">
+					<if test="Search == 'NameSearch'">
+					    AND repName LIKE '%' || #{Searchtext} || '%' 
+					</if>				    
+				</if>
+		   	</trim>
+	</select>
+	
+	<!-- 연습실 상세보기 -->
+	<select id="SelectRoom" resultType="Mu_Office" parameterType="int">
+		Select * FROM mu_office WHERE OFNO = #{ofNo}
+	</select>
+		
+	<!-- 연습실 삭제 -->
+	<delete id="DeleteRoom">
+		DELETE FROM mu_office WHERE OFNO = #{ofNo}
+	</delete>
+
+<!-- 첨부이미지들 추가 -->
+		 <update id="insertRImg1" parameterType="hashMap">
+				UPDATE mu_office SET OFIMG1 = #{STORED_FILE_NAME}
+					WHERE OFNO = #{ofNo}
+	    </update>
+	     <update id="insertRImg2" parameterType="hashMap">
+				UPDATE mu_office SET OFIMG2 = #{STORED_FILE_NAME}
+					WHERE OFNO = #{ofNo}
+	    </update>
+	     <update id="insertRImg3" parameterType="hashMap">
+				UPDATE mu_office SET OFIMG3 = #{STORED_FILE_NAME}
+					WHERE OFNO = #{ofNo}
+	    </update>
+	     <update id="insertRImg4" parameterType="hashMap">
+				UPDATE mu_office SET OFIMG4 = #{STORED_FILE_NAME}
+					WHERE OFNO = #{ofNo}
+	    </update>
+	     <update id="insertRImg5" parameterType="hashMap">
+				UPDATE mu_office SET OFIMG5 = #{STORED_FILE_NAME}
+					WHERE OFNO = #{ofNo}
+	    </update>
+	    <update id="insertRImg6" parameterType="hashMap">
+				UPDATE mu_office SET OFIMG6 = #{STORED_FILE_NAME}
+					WHERE OFNO = #{ofNo}
+	    </update>
+	     <update id="insertRImg7" parameterType="hashMap">
+				UPDATE mu_office SET OFIMG7 = #{STORED_FILE_NAME}
+					WHERE OFNO = #{ofNo}
+	    </update>
+	     <update id="insertRImg8" parameterType="hashMap">
+				UPDATE mu_office SET OFIMG8 = #{STORED_FILE_NAME}
+					WHERE OFNO = #{ofNo}
+	    </update>
+</mapper>

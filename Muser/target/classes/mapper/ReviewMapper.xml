@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.muser.mybatis.mapper.ReviewMapper">
+	<!-- 리뷰댓글 쓰기 -->
+	<insert id="ReviewInsert" parameterType="Review">
+		INSERT INTO review (reviewNo,muId,stars,reviewDesc,rvDate)
+		VALUES(rv_seq.NEXTVAL,#{muId},#{stars},#{reviewDesc},SYSDATE)
+	</insert>
+	
+	<!-- 리뷰리스트 -->
+	<select id="ReviewList" resultType="Review">
+		SELECT * FROM review ORDER BY rvDate DESC
+	</select>
+	
+	<!-- 리뷰 수정하기 -->
+	<update id="UpdateReview" parameterType="Review">
+		UPDATE review SET reviewDesc=#{reviewDesc}, rvDate=SYSDATE WHERE reviewNo=#{reviewNo}
+	</update>
+	
+	<!-- 리뷰 삭제하기 -->
+	<delete id="DeleteReview" parameterType="int">
+		DELETE FROM review WHERE reviewNo=#{reviewNo}
+	</delete>
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.muser.mybatis.mapper.ReservationMapper">
+	<insert id="ReservationCheckIn">
+			INSERT INTO RESERVATION (resNo,muId,ofNo,bookDate)
+				values (RES_SEQ.NEXTVAL,#{muId},#{ofNo},#{bookDate})
+		</insert>
+		
+		<select id="ReservationCheck" resultType="int">
+			SELECT count(*) From RESERVATION WHERE ofNo = #{ofNo} AND bookDate = #{bookDate}
+		</select>
+		
+		<select id="ReservationList" resultType="Reservation">
+			SELECT r.resNo AS resNo, m.muId AS muId, o.ofNo AS ofNo, m.muName AS muName, o.ofName AS ofName, o.repName AS repName, o.ofPrice AS ofPrice, r.bookDate
+				FROM Mu_Office o, RESERVATION r, Mu_Member m
+				WHERE m.muId = r.muId AND o.ofNo = r.ofNo AND r.muId = #{muId}
+				ORDER BY r.bookDate
+		</select>
+		
+		<select id="sumMoney" resultType="int">
+			SELECT NVL(SUM(ofPrice),0)
+			FROM Reservation r, Mu_Office o
+			WHERE r.ofNo = o.oFNo AND r.muId = #{muId}
+	</select>
+		
+
+</mapper>

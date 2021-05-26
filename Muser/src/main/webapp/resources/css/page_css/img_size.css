@@ -1,0 +1,254 @@
+.Isize{
+    display: inline-block;
+    width: 150px;
+    height: 125px;
+    margin: 2px;
+    overflow: hidden;
+}
+
+.footer_color{
+    background-color: gray;
+}
+
+.header{
+         margin-bottom: 0px; background: url(/img/bg_guitar_1.jpg); padding-bottom: 0px; background-position:center top; border: 0px; background-size: 100%; top: 20; left: 0; right: 20px;
+    }
+
+    .bgimg{
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 300px;
+        height: 300px;
+    }
+
+.logopos{
+    position: relative;
+    left: 300px;
+    top: 300px;
+}
+  
+body{
+     padding-bottom:15px; 
+    }
+
+    .header_ul{
+        margin-bottom: 0px;
+    }
+
+    .header_User{
+         top: 20; left: 0; right: 20px;    margin-bottom: 0px; background: url(/img/뒷배경_1.jpg); padding-bottom: 0px; background-position:center top; border: 0px; background-size: 100%;
+       }
+   
+       .bgimg{
+           overflow: hidden;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           width: 300px;
+           height: 300px;
+       }
+
+
+
+/* 회원정보 */
+@import url(http://fonts.googleapis.com/css?family=Lato:400,700);
+.profile
+{
+    font-family: 'Lato', 'sans-serif';
+    }
+.profile 
+{
+/*    height: 321px;
+    width: 265px;*/
+margin-top: 2px;
+padding:1px;
+    display: inline-block;
+    }
+.divider 
+{
+    border-top:1px solid rgba(0,0,0,0.1);
+    }
+.emphasis 
+{
+    border-top: 1px solid transparent;
+    }
+
+.emphasis h2
+{
+    margin-bottom:0;
+    }
+span.tags 
+{
+    background: #1abc9c;
+    border-radius: 2px;
+    color: #f5f5f5;
+    font-weight: bold;
+    padding: 2px 4px;
+    }
+.profile strong,span,div{
+    text-transform: initial;
+}
+
+/* 회원정보 end */
+
+.U_From{
+    color: lightslategray;
+    background-color: lightslategray;
+    border-color: lightslategray;
+    padding: 16px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+}
+
+.U_Text{
+margin-top: 0;
+margin-bottom: 0;
+font-size: 16px;
+color: white;
+}
+
+.U_Edge{
+    border-color: yellow;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgb(0 0 0 / 5%);
+    box-shadow: 0 1px 1px rgb(0 0 0 / 5%);
+}
+
+.U_body{
+    padding: 15px;
+
+}
+
+.btn-primary1 {
+    color: #fff;
+    background-color: lightslategray;
+    border-color: lightslategray;
+
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.btn-primary2 {
+    color: #fff;
+    background-color: lightslategray;
+    border-color: lightslategray;
+
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    margin-right: 190px;
+}
+
+
+.wr_Botton_2{
+    padding: .25rem .5rem;
+    font-size: .875rem;
+    line-height: 1.5;
+    border-radius: .2rem;
+    color: #fff;
+    background-color: darkgray;
+    border-color: darkgray;
+    margin-left: 0px;
+}
+
+.wr_Botton{
+    padding: .25rem .5rem;
+    font-size: .875rem;
+    line-height: 1.5;
+    border-radius: .2rem;
+    color: #fff;
+    background-color: darkgray;
+    border-color: darkgray;
+    margin-left: 910px;
+}
+
+.wr-header {
+    padding: .75rem 1.27rem;
+    padding-right: 2px;
+    margin-bottom: 0;
+    background-color: rgba(0,0,0,.03);
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.head_text{
+    font-size: 2rem;}
+
+    .cart_font{
+        border-top: 0px;
+        font-size: 40px;
+        font-weight: 500;
+        font-family: "Playfair Display",serif;
+        color: #828bb2;
+        border-bottom: 0px !important;
+        margin-top: 30px;
+    }
+
+    .cart_are_padding{
+        padding: 50px;
+    }
+
+
+.btn-like_7 {
+  color: transparent;
+  text-shadow: 0 0 2px rgba(255,255,255,.7), 0 0 0 #000;
+}
+.btn-like_7:hover {
+  text-shadow: 0 0 0 #ea0;
+}
+.btn-like_7.done {
+  color: inherit;
+  text-shadow: 0;
+}
+.btn-like_7.done:hover {
+  color: transparent;
+  text-shadow: 0 0 0 #777;
+}
+
+.checkbox_Ksc{
+    margin-top: 50px;
+    margin-left: -30px;
+    margin-right: 40px;
+}
+
+
+
+.header_2{
+    margin-bottom: 0px; background: url(/img/뒷배경_1.jpg); padding-bottom: 0px; background-position:center top; border: 0px; background-size: 100%;
+   }

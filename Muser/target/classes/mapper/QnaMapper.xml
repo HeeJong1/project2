@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.muser.mybatis.mapper.QnaMapper">
+
+	<!-- QnA 글쓰기 -->
+	<insert id="QnaInsert" parameterType="QnA_Board">
+		INSERT INTO mu_qna (qnaNo,muId,qnaTitle,qnaDesc,qnaDate)
+		VALUES (QNA_SEQ.NEXTVAL,#{muId},#{qnaTitle},#{qnaDesc},SYSDATE)
+	</insert>
+	
+	<!-- QnA 게시판 리스트 업 -->
+	<select id="QnaBoardList" resultType="QnA_Board" parameterType="hashMap">
+				SELECT qnaNo,muId,qnaTitle,qnaDesc,qnaDate FROM (
+					SELECT QNA_P_SEQ,qnaNo,muId,qnaTitle,qnaDesc,qnaDate From(
+						SELECT ROWNUM AS QNA_P_SEQ,qnaNo,muId,qnaTitle,qnaDesc,qnaDate From(
+							SELECT * FROM mu_qna
+							<trim prefix="WHERE" prefixOverrides="AND|OR">
+							    <if test="Search == 'IdSearch' and Searchtext !=null and Searchtext!=''">
+							    		AND muId LIKE '%' || #{Searchtext} || '%'
+							    </if>
+							</trim>
+							ORDER BY qnaNo DESC
+						)
+					)
+				WHERE QNA_P_SEQ >= ${start-1}
+				)
+				<![CDATA[WHERE ROWNUM <= ${end}]]>
+	</select>
+	<!-- QnA 게시판 페이징 -->
+	<select id="SelectCount" resultType="int" parameterType="hashMap">
+		   		SELECT count(*) FROM mu_qna 
+		   		<trim prefix="WHERE" prefixOverrides="AND|OR">
+		   			<if test="Searchtext !=null and Searchtext !='' ">
+						 <if test="Search == 'IdSearch'">
+						    AND muId LIKE '%' || #{Searchtext} || '%' 
+						 </if>
+					 </if>
+		   		</trim>
+		</select>
+	
+	<!-- QnA 글 상세보기 -->
+	<select id="SelectQnaBoard" resultType="QnA_Board" parameterType="int">
+		SELECT * FROM mu_qna WHERE qnaNo = #{qnaNo}
+	</select>
+	
+	<!-- QnA 글 삭제 -->
+	<delete id="QnaDelete" parameterType="int">
+		DELETE FROM mu_qna WHERE qnaNo = #{qnaNO}
+	</delete>
+	
+</mapper>

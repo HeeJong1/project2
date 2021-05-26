@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.muser.mybatis.mapper.CartMapper">
+	
+	<insert id="insertCart">
+		INSERT INTO CART (cartNo,muId,gdsNo,cartAmount)
+			values (CART_SEQ.NEXTVAL,#{muId},#{gdsNo},#{cartAmount})
+	</insert>
+	
+	<select id="listCart" resultType="Cart">
+		SELECT c.cartNo AS cartNo, c.muId AS muId, g.gdsNo AS gdsNo, m.muName AS muName, g.gdsName AS gdsName, g.gdsImg1, g.gdsAmount, c.cartAmount, g.gdsPrice AS gdsPrice, (gdsPrice*cartAmount) money
+			FROM Mu_Goods g, Cart c, Mu_Member m
+			WHERE m.muId = c.muId AND g.gdsNo = c.gdsNo AND c.muId = #{muId}
+			ORDER BY c.cartNo
+	</select>
+	
+	<select id="sumMoney" resultType="int">
+		SELECT NVL(SUM(gdsPrice * cartAmount),0)money
+			FROM Cart c, Mu_Goods g
+			WHERE c.gdsNo = g.gdsNo AND c.muId = #{muId}
+	</select>
+	
+	<update id="modifyCart">
+		UPDATE CART SET cartAmount = #{cartAmount} 
+			WHERE muId = #{muId} AND gdsNo = #{gdsNo}
+	</update>
+	
+	<delete id="deleteCart">
+		DELETE FROM CART
+			WHERE cartNo = #{cartNo}
+	</delete>
+	<delete id="deleteCartAll">
+		DELETE FROM CART
+			WHERE muId = #{muId}
+	</delete>
+	
+	<select id="countCart" resultType="int">
+		SELECT COUNT(*) FROM CART 
+			WHERE muId = #{muId} AND gdsNo = #{gdsNo}
+	</select>
+	
+	<update id="sumCart">
+		UPDATE CART SET cartAmount = cartAmount + #{cartAmount}
+			WHERE muId = #{muId} AND gdsNo = #{gdsNo}
+	</update>
+</mapper>

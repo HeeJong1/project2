@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.muser.mybatis.mapper.MemberMapper">
+
+	<select id="duplicateCheck" parameterType="String" resultType="Mu_Member">
+		SELECT muId FROM Mu_Member WHERE muId=#{muId}
+	</select>
+	
+	<insert id="MemberInsert" parameterType="Mu_Member">
+        INSERT INTO Mu_Member
+		VALUES
+		(MT_SEQ.NEXTVAL,#{muId},#{muPw},#{muName},#{muBirth},#{muPhone},#{muAddr1},#{muAddr2},#{muAddr3},#{muEmail},0)
+	</insert>
+	
+	<select id="MemberLogin"  resultType="Mu_Member">
+	   SELECT muId,muPw FROM Mu_Member WHERE muId=#{muId} <!-- AND MUPW=#{muPw} -->
+	</select>
+		
+	
+	
+	<select id="SelectMember" resultType="Mu_Member" parameterType="String">
+		SELECT * FROM Mu_Member WHERE muId=#{muId}
+	</select>
+	
+	<update id="UpdateMember" parameterType="Mu_Member">
+		UPDATE Mu_Member SET muPw=#{muPw},muName=#{muName},muBirth=#{muBirth},muEmail=#{muEmail},muPhone=#{muPhone},
+								muAddr1=#{muAddr1},muAddr2=#{muAddr2},muAddr3=#{muAddr3}
+						WHERE muId=#{muId}
+	</update>
+	
+	<delete id="DeleteMember">
+		DELETE FROM Mu_Member WHERE muId=#{muId} 
+		AND muPw=#{muPw}
+	</delete>
+	
+	<select id="MemberList" resultType="Mu_Member" parameterType="hashMap">
+		SELECT muNo,muId,muName,muEmail,muPhone FROM (
+			SELECT MT_P_SEQ,muNo,muId,muName,muEmail,muPhone FROM (
+				SELECT ROWNUM AS MT_P_SEQ,muNo,muId,muName,muEmail,muPhone FROM (
+					SELECT * FROM Mu_Member 
+						<trim prefix="WHERE" prefixOverrides="AND|OR">
+							<if test="Search == 'NoSearch' and Searchtext !=null and Searchtext !=''">
+			  				    	AND  muNo LIKE '%' || #{Searchtext} || '%' 
+							</if>
+							<if test="Search == 'IdSearch' and Searchtext !=null and Searchtext !=''">
+			  				    	AND  muId LIKE '%' || #{Searchtext} || '%'
+							</if>
+							<if test="Search == 'NameSearch' and Searchtext !=null and Searchtext!=''">
+							   		AND muName LIKE '%' || #{Searchtext} || '%' 
+							</if>
+							<if test="Search == 'EmailSearch' and Searchtext !=null and Searchtext!=''">
+							    	AND muEmail LIKE '%' || #{Searchtext} || '%' 
+							</if>
+						</trim>
+					ORDER BY muNo DESC 
+				)
+			)	
+		WHERE MT_P_SEQ >= ${start-1}
+		)
+		<![CDATA[WHERE ROWNUM <= ${end}]]>
+	</select>
+	
+	<select id="SelectCount" resultType="int" parameterType="hashMap">
+		SELECT count(*) FROM Mu_Member 
+			<trim prefix="WHERE" prefixOverrides="AND|OR">	   		
+		   		<if test="Searchtext !=null and Searchtext !='' ">
+			   		<if test="Search=='NoSearch'">
+			   		    AND  muNo LIKE '%' || #{Searchtext} || '%' 
+			   		</if>
+			   		<if test="Search == 'IdSearch'">
+					    AND muId LIKE '%' || #{Searchtext} || '%' 
+					</if>
+					<if test="Search == 'NameSearch'">
+					    AND muName LIKE '%' || #{Searchtext} || '%' 
+					</if>
+					<if test="Search == 'EmailSearch'">
+					    AND muEmail LIKE '%' || #{Searchtext} || '%' 
+					</if>				    
+				</if>
+		   	</trim>
+	</select>
+</mapper>
+
+
+
+
+
+
+

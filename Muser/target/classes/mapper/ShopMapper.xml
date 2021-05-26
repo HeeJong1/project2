@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.muser.mybatis.mapper.ShopMapper">
+		 <!-- 상품등록 -->
+		<insert id="InsertGoods" parameterType="Mu_Goods" keyProperty="gdsNo" useGeneratedKeys="true">
+				<selectKey keyProperty="gdsNo" resultType="int" order="BEFORE">
+	    			SELECT GDS_SEQ.NEXTVAL FROM DUAL
+	    		</selectKey>
+				INSERT INTO mu_goods (gdsNo,cateCode,gdsName,gdsNational,gdsBrand,gdsPackage,gdsAmount,gdsPrice,gdsDate) 
+				VALUES (#{gdsNo},#{cateCode},#{gdsName},#{gdsNational},#{gdsBrand},#{gdsPackage},#{gdsAmount},#{gdsPrice},SYSDATE)
+		</insert>
+		<!-- 첨부이미지들 추가 -->
+		 <update id="insertGImg1" parameterType="hashMap">
+				UPDATE mu_goods SET GDSIMG1 = #{STORED_FILE_NAME}
+					WHERE GDSNO = #{gdsNo}
+	    </update>
+	     <update id="insertGImg2" parameterType="hashMap">
+				UPDATE mu_goods SET GDSIMG2 = #{STORED_FILE_NAME}
+					WHERE GDSNO = #{gdsNo}
+	    </update>
+	     <update id="insertGImg3" parameterType="hashMap">
+				UPDATE mu_goods SET GDSIMG3 = #{STORED_FILE_NAME}
+					WHERE GDSNO = #{gdsNo}
+	    </update>
+	     <update id="insertGImg4" parameterType="hashMap">
+				UPDATE mu_goods SET GDSIMG4 = #{STORED_FILE_NAME}
+					WHERE GDSNO = #{gdsNo}
+	    </update>
+	     <update id="insertGImg5" parameterType="hashMap">
+				UPDATE mu_goods SET GDSIMG5 = #{STORED_FILE_NAME}
+					WHERE GDSNO = #{gdsNo}
+	    </update>
+		
+		<!-- 상품 목록 -->
+		<select id="gListAll" resultType="Mu_Goods" parameterType="String">
+				Select * FROM Mu_Goods 
+					WHERE cateCode = #{cateCode}
+					ORDER BY gdsDate DESC
+		</select>
+		
+		<!-- 상품상세보기 -->
+		<select id="SelectGoods" resultType="Mu_Goods" parameterType="int">
+			SELECT * FROM Mu_Goods WHERE GDSNO = #{gdsNo} 
+		</select>
+		
+		 <!-- 연습실 리스트 -->
+	    <select id="ShopList" resultType="Mu_Goods" parameterType="hashMap">
+		SELECT gdsNo,gdsName,gdsAmount,gdsPrice,gdsDate FROM (
+			SELECT GDS_P_SEQ,gdsNo,gdsName,gdsAmount,gdsPrice,gdsDate FROM (
+				SELECT ROWNUM AS GDS_P_SEQ,gdsNo,gdsName,gdsAmount,gdsPrice,gdsDate FROM (
+					SELECT * FROM Mu_Goods 
+						<trim prefix="WHERE" prefixOverrides="AND|OR">
+							<if test="Search == 'CateSearch' and Searchtext !=null and Searchtext!=''">
+							    	AND cateCode LIKE '%' || #{Searchtext} || '%' 
+							</if>
+							<if test="Search == 'NameSearch' and Searchtext !=null and Searchtext!=''">
+							   		AND gdsName LIKE '%' || #{Searchtext} || '%' 
+							</if>
+						</trim>
+					ORDER BY gdsNo DESC 
+				)
+			)	
+		WHERE GDS_P_SEQ >= ${start-1}
+		)
+		<![CDATA[WHERE ROWNUM <= ${end}]]>
+	</select>
+	
+	<select id="SelectCount" resultType="int" parameterType="hashMap">
+		SELECT count(*) FROM Mu_Goods 
+			<trim prefix="WHERE" prefixOverrides="AND|OR">	   		
+		   		<if test="Searchtext !=null and Searchtext !='' ">
+		   			<if test="Search == 'CateSearch'">
+					    AND cateCode LIKE '%' || #{Searchtext} || '%' 
+					</if>
+					<if test="Search == 'NameSearch'">
+					    AND gdsName LIKE '%' || #{Searchtext} || '%' 
+					</if>				    
+				</if>
+		   	</trim>
+	</select>
+	
+	<!-- 카테고리 호출 -->
+	<select id="Category" resultType="Mu_Category">
+		SELECT cateCode, cateName From Mu_Category
+	</select>
+	
+			<!-- 첨부파일 추가 -->
+		 <insert id="insertGFile" parameterType="hashMap">
+				INSERT INTO MP_GFILE(
+					FILE_NO,GDSNO,ORG_FILE_NAME,STORED_FILE_NAME,FILE_SIZE
+				)VALUES(
+					SEQ_MP_GFILE_NO.NEXTVAL,#{gdsNo},#{ORG_FILE_NAME},#{STORED_FILE_NAME},#{FILE_SIZE}
+				)
+	    </insert>
+	    
+	    <!-- 첨부파일 조회 -->
+	    <select id="SelectFileList" parameterType="int" resultType="hashMap">
+	    		Select File_NO,ORG_FILE_NAME,STORED_FILE_NAME,ROUND(FILE_SIZE/1024,1) AS FILE_SIZE FROM MP_GFILE
+	    			WHERE GDSNO = #{gdsNo} AND DEL_GB ='N'
+	    </select>
+	    
+	    
+	    <update id="modifyGoodsAmount">
+	    	UPDATE Mu_Goods SET gdsAmount = #{gdsAmount}
+	    		WHERE gdsNo = #{gdsNo}
+	    </update>
+	   
+	   	<delete id="DeleteGoods">
+	   		DELETE FROM Mu_Goods WHERE gdsNo = #{gdsNo}
+	   	</delete>
+</mapper>
